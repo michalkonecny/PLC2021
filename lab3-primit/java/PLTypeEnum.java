@@ -2,11 +2,11 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.EnumSet;
 
-public class OSTypeEnum
+public class PLTypeEnum
 {
-    enum OS { ANDROID, IOS, MACOSX, WINDOWS8, WP8, VXWORKS }
+    enum PL { JAVA, C, ADA, PYTHON, LISP, HASKELL, PROLOG }
     
-    enum OSType { DESKTOP, EMBEDDED, MOBILE }
+    enum PLType { OO, PROCEDURAL, FUNCTIONAL, LOGICAL }
     
     private static <E extends Enum<E>> E getEnumElement(String elementTypeName, Class<E> elementType)
     {
@@ -32,23 +32,26 @@ public class OSTypeEnum
         return result;
     }
   
-    private static OSType os2OSType(OS os)
+    private static PLType pl2PLType(PL pl)
     {
-        OSType type = null;
+        PLType type = null;
         
-        switch (os)
+        switch (pl)
         {
-        case ANDROID:
-        case IOS:
-        case WP8:
-            type = OSType.MOBILE;
+        case JAVA:
+        case PYTHON:
+            type = PLType.OO;
             break;
-        case WINDOWS8:
-        case MACOSX:
-            type = OSType.DESKTOP;
+        case C:
+        case ADA:
+            type = PLType.PROCEDURAL;
             break;
-        case VXWORKS:
-            type = OSType.EMBEDDED;
+        case LISP:
+        case HASKELL:
+            type = PLType.FUNCTIONAL;
+            break;
+        case PROLOG:
+            type = PLType.LOGICAL;
             break;
         }
         
@@ -57,14 +60,14 @@ public class OSTypeEnum
 
     public static void main(String[] args)
     {
-        System.out.print("Known OSs = ");
-        for (OS t : EnumSet.allOf(OS.class)) 
+        System.out.print("Known PLs = ");
+        for (PL t : EnumSet.allOf(PL.class)) 
         {
             System.out.print(t + " ");
         }
         System.out.println();
         
-        OS os = getEnumElement("operating system", OS.class);
-        System.out.println(os + " is of type: " + os2OSType(os));
+        PL pl = getEnumElement("programming language", PL.class);
+        System.out.println(pl + " is of type: " + pl2PLType(pl));
     }
 }

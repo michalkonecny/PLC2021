@@ -104,7 +104,7 @@ infiniteTree =
 -- and returns a modified HTML table that differs only in one cell 
 -- of the board, namely the cell with coordinates (i,j) and its new value is e.
 changeHtmlBoardCell board i j e =
-    set cellLens e board
+    board & (set cellLens e)
     where
     cellLens = 
         htf_children . -- go inside TABLE element

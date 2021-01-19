@@ -1,16 +1,16 @@
-public class Bubble
+public class Balance
 {
     /**
      * A monitor for keeping the four numbers a,b,c,d
      * and for synchronising the swapping of neighbours
-     * and detection when the numbers are sorted.
+     * and detection when the numbers are balanced.
      */
     private static class State
     {
         private int a, b, c, d;
-
+        
         /**
-         * Set the numbers a, b, c, d to be sorted.
+         * Set the numbers a, b, c, d to be balanced.
          */
         public synchronized void set_all(int a, int b, int c, int d)
         {
@@ -35,12 +35,12 @@ public class Bubble
         }
 
         /**
-         * Block until a, b, c, d are sorted and then return them all.
+         * Block until a, b, c, d are balanced and then return them all.
          */
-        public synchronized ABCD wait_until_sorted()
+        public synchronized ABCD wait_until_all_balanced()
         {
-            // wait until the numbers a, b, c, d are sorted:
-            while ( ! (a <= b && b <= c && c <= d) )
+            // wait until the numbers a, b, c, d are balanced:
+            while ( ! (balanced(a,b) && balanced(b,c) && balanced(c,d)) )
             {
                 try { this.wait(); } catch (InterruptedException e) { }
             }
@@ -55,19 +55,54 @@ public class Bubble
             return result;
         }
 
+        private static boolean balanced(int i, int j)
+        {
+            return Math.abs(j-i) <= 1;
+        }
+
         /**
-         * Wait until B is smaller than A and then swap the value of A and B.
+         * Wait until A and B are not balanced and then bring their values nearer each other
          */
-        public synchronized void bubble_ab()
+        public synchronized void balanceAB()
         {
             /* TASK 9.2.(c) - part 1 */
 
 
 
 
-            int temp = a;
-            a = b;
-            b = temp;
+            if(a < b - 1)
+            {
+                a++; b--;
+            }
+            else if(b < a - 1)
+            {
+                b++; a--;
+            }
+
+            print();
+            /* TASK 9.2.(c) - part 2 */
+
+
+        }
+
+        /**
+         * Wait until B and C are not balanced and then bring their values nearer each other
+         */
+        public synchronized void balanceBC()
+        {
+            /* TASK 9.2.(c) - part 1 */
+
+
+
+
+            if(b < c - 1)
+            {
+                b++; c--;
+            }
+            else if(c < b - 1)
+            {
+                c++; b--;
+            }
 
             print();
             /* TASK 9.2.(c) - part 2 */
@@ -75,47 +110,32 @@ public class Bubble
         }
 
         /**
-         * Wait until C is smaller than B and then swap the value of B and C.
+         * Wait until C and D are not balanced and then bring their values nearer each other
          */
-        public synchronized void bubble_bc()
+        public synchronized void balanceCD()
         {
             /* TASK 9.2.(c) - part 1 */
 
 
 
 
-            int temp = b;
-            b = c;
-            c = temp;
+            if(c < d - 1)
+            {
+                c++; d--;
+            }
+            else if(d < c - 1)
+            {
+                d++; c--;
+            }
 
             print();
             /* TASK 9.2.(c) - part 2 */
 
         }
 
-        /**
-         * Wait until D is smaller than C and then swap the value of C and D.
-         */
-        public synchronized void bubble_cd()
-        {
-            /* TASK 9.2.(c) - part 1 */
-
-
-
-
-
-            int temp = c;
-            c = d;
-            d = temp;
-
-            print();
-            /* TASK 9.2.(c) - part 2 */
-
-        }
-
-        /*
+        /* 
          * the following does not need to be synchronized
-         * because it is only ever called from a synchronized
+         * because it is only ever called from a synchronized 
          * method in this class.
          */
         private void print()
@@ -123,7 +143,7 @@ public class Bubble
             System.out.printf("a = %d, b = %d, c = %d, d = %d\n", a, b, c, d);
         }
     }
-
+    
     /**
      * A global variable pointing at an instance of State.
      * This serves to synchronise all threads in the system.
@@ -131,41 +151,41 @@ public class Bubble
     private static State state = new State();
 
     /**
-     * A class of threads that periodically calls state.bubble_ab().
+     * A class of threads that periodically calls state.balanceAB().
      */
-    private static class Bubble_ab implements Runnable
+    private static class BalanceAB implements Runnable
     {
         public void run()
         {
-            while ( true ) { state.bubble_ab(); }
+            while ( true ) { state.balanceAB(); }
         }
     }
 
     /**
-     * A class of threads that periodically calls state.bubble_bc().
+     * A class of threads that periodically calls state.balanceBC().
      */
-    private static class Bubble_bc implements Runnable
+    private static class BalanceBC implements Runnable
     {
         public void run()
         {
-            while ( true ) { state.bubble_bc(); }
+            while ( true ) { state.balanceBC(); }
         }
     }
 
     /**
-     * A class of threads that periodically calls state.bubble_bc().
+     * A class of threads that periodically calls state.balanceBC().
      */
-    private static class Bubble_cd implements Runnable
+    private static class BalanceCD implements Runnable
     {
         public void run()
         {
-            while ( true ) { state.bubble_cd(); }
+            while ( true ) { state.balanceCD(); }
         }
     }
 
     /**
      * Wrapper around Thread.sleep which ignores any InterruptedException.
-     *
+     * 
      * @param millis = number of milliseconds to sleep for
      */
     public static void sleep(int millis)
@@ -173,22 +193,22 @@ public class Bubble
         try
         {
             Thread.sleep(millis);
-        }
+        } 
         catch (InterruptedException e) {}
     }
 
     public static void main(String[] args)
     {
-        // start the bubble threads:
+        // start the balance threads:
         /* TASK 9.2.(b) */
 
 
 
 
-        // set a task to the sorter:
+        // set a task to the balancer:
         System.out.println("Starting");
-        state.set_all(5,1,3,1);
-        state.wait_until_sorted();
+        state.set_all(5,1,3,10);
+        state.wait_until_all_balanced();
         System.out.println("Finishing");
     }
 

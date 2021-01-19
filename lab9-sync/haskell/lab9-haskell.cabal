@@ -13,9 +13,9 @@ executable lab9-haskell-StartStop
   main-is:             StartStop.hs
   build-depends:       base, stm
 
-executable lab9-haskell-Bubble
+executable lab9-haskell-Balance
   hs-source-dirs:      .
-  main-is:             Bubble.hs
+  main-is:             Balance.hs
   build-depends:       base, stm
 
 

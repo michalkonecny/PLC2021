@@ -8,7 +8,7 @@ executable lab7-haskell-vars
   main-is:             vars.hs
   build-depends:       base
 
-executable lab7-haskell-accomRoomSize
+executable lab7-haskell-tttScopes
   hs-source-dirs:      .
-  main-is:             accomRoomSize.hs
+  main-is:             tttScopes.hs
   build-depends:       base

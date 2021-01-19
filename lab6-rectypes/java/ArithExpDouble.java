@@ -1,10 +1,10 @@
 
 // a leaf node of an expression, containing an integer
-class ArithExpInt extends ArithExp
+class ArithExpDouble extends ArithExp
 {
-    public int value;
+    public double value;
 
-    public ArithExpInt(int value)
+    public ArithExpDouble(double value)
     {
         this.value = value;
     }
@@ -21,7 +21,7 @@ class ArithExpInt extends ArithExp
 
     public void incrementAllNumbers()
     {
-        value ++;
+        value = value + 1;
     }
 
     public String toString()

@@ -1,20 +1,15 @@
 ; define function exp1
 ; in Java it would be: static float exp1(float a, float b){ return ...; }
 (defun exp1 (a b)
-    (+
-        a
-        (/
-            1
-            (+ 
-                a
-                b
-            )
-        )
-        (*
+    (*
+        (+
             a
-            b
-        )
-    )
+            b)
+        (-
+            a
+            (/
+                1
+                b)))
 )
 
 ; define function get-number
@@ -29,6 +24,7 @@
             (progn 
                 (write-line "Invalid number, please try again.")  ;no, try again
                 (get-element))))) ;using recursion
+
 
 ; evaluate an expression and display its result:
 ; (asking the user for 2 numbers in the process)

@@ -11,10 +11,12 @@ main =
     -- create and start some threads:
     -- *** TASK 9.2.(d) ***
 
-    -- give the state a sorting task:
+
+    
+    -- give the state a balancing task:
     putStrLn "Starting"
-    set_all stateTV 5 1 3 1
-    waitUntilSorted stateTV
+    setAll stateTV 5 1 3 10
+    waitUntilAllBalanced stateTV
     putStrLn "Finishing"
     -- the forked threads will be aborted automatically now
 
@@ -27,67 +29,79 @@ data State =
         state_d :: Int,
         state_printing :: Bool
     }
-
+    
 initState = State 0 0 0 0 False
 
-bubble_ab stateTV =
+keepBalancingAB stateTV =
     do
-    swap_ab stateTV
+    balanceAB stateTV
     printState stateTV
-    bubble_ab stateTV -- go to the beginning
+    keepBalancingAB stateTV -- go to the beginning
 
-swap_ab stateTV =
+balanceAB stateTV =
     atomically $
         do
         state <- readTVar stateTV
         let a = state_a state
         let b = state_b state
-        if a <= b || state_printing state
+        if balanced a b || state_printing state
             then retry
             else
                 do
-                let new_state = state { state_a = b, state_b = a, state_printing = True }
+                let (new_a, new_b) = balance a b
+                let new_state = state
+                        { state_a = new_a,
+                          state_b = new_b,
+                          state_printing = True }
                 writeTVar stateTV new_state
 
-bubble_bc stateTV =
+keepBalancingBC stateTV =
     do
-    swap_bc stateTV
+    balanceBC stateTV
     printState stateTV
-    bubble_bc stateTV -- go to the beginning
+    keepBalancingBC stateTV -- go to the beginning
 
-swap_bc stateTV =
+balanceBC stateTV =
     atomically $
         do
         state <- readTVar stateTV
         let b = state_b state
         let c = state_c state
-        if b <= c || state_printing state
+        if balanced b c || state_printing state
             then retry
             else
                 do
-                let new_state = state { state_b = c, state_c = b, state_printing = True }
+                let (new_b, new_c) = balance b c
+                let new_state = state
+                        { state_b = new_b,
+                          state_c = new_c,
+                          state_printing = True }
                 writeTVar stateTV new_state
 
-bubble_cd stateTV =
+keepBalancingCD stateTV =
     do
-    swap_cd stateTV
+    balanceCD stateTV
     printState stateTV
-    bubble_cd stateTV
+    keepBalancingCD stateTV
 
-swap_cd stateTV =
+balanceCD stateTV =
     atomically $
         do
         state <- readTVar stateTV
         let c = state_c state
         let d = state_d state
-        if c <= d || state_printing state
+        if balanced c d || state_printing state
             then retry
             else
                 do
-                let new_state = state { state_c = d, state_d = c, state_printing = True }
+                let (new_c, new_d) = balance c d
+                let new_state = state
+                        { state_c = new_c,
+                          state_d = new_d,
+                          state_printing = True }
                 writeTVar stateTV new_state
 
-set_all stateTV a b c d =
+setAll stateTV a b c d =
     do
     atomically $
         do
@@ -108,12 +122,21 @@ printState stateTV =
     -- signal that printing is finished:
     atomically $ writeTVar stateTV (state { state_printing = False })
 
-waitUntilSorted stateTV =
+waitUntilAllBalanced stateTV =
     atomically $ -- ie critical section
         do
         state <- readTVar stateTV
         -- extract all four state components at once:
-        let (State a b c d isPrinting) = state
-        -- check whether sorted and block if not yet:
+        let (State a b c d printing) = state
+        -- check whether balanced and block if not yet:
         -- *** TASK 9.2.(e) ***
-        pure () -- remove this line, replace with task solution
+
+
+
+
+balanced i j = abs (j - i) <= 1
+
+balance i j
+    | i < j - 1 = (i+1, j-1)
+    | j < i - 1 = (i-1, j+1)
+    | otherwise = (i,j)

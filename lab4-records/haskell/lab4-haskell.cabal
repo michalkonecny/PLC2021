@@ -3,9 +3,9 @@ version:             0.1.0.0
 build-type:          Simple
 cabal-version:       >=1.10
 
-executable lab4-haskell-accom
+executable lab4-haskell-ttt
   hs-source-dirs:      .
-  main-is:             accom.hs
+  main-is:             ttt.hs
   build-depends:       base
 
 executable lab4-haskell-recordtest

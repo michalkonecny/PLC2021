@@ -1,9 +1,12 @@
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.stream.Stream; // Java 8 and above
+import java.util.stream.Collectors; // Java 8 and above
 
-public class tttColl
+public class tttCollNotes
 {
 
     private static enum CellValue { X, O, B };
@@ -29,16 +32,16 @@ public class tttColl
         {
             this.rows = rows;
         }
-        
+
         public CellValue[][] rows; // 2-dim array
-        
+
         public void changeCell // overwrites original board!
-            (Pos pos, 
+            (Pos pos,
              CellValue newValue)
         {
             rows[pos.row][pos.column] = newValue;
         }
-        
+
         public String toString()
         {
             String result = "";
@@ -53,17 +56,8 @@ public class tttColl
             return result;
         }
     }
-    
+
     private static Board board1 =
-            new Board
-            (
-                new CellValue[][]
-                {{CellValue.X, CellValue.X, CellValue.O},
-                 {CellValue.O, CellValue.B, CellValue.X},
-                 {CellValue.O, CellValue.B, CellValue.B}}
-            );
-    
-    private static Board board2 =
             new Board
             (
                 new CellValue[][]
@@ -73,7 +67,7 @@ public class tttColl
             );
 
     private static enum Player { X, O };
-    
+
     public static CellValue playerCellVal(Player player)
     {
         switch ( player )
@@ -83,78 +77,77 @@ public class tttColl
         default: return null;
         }
     }
-    
+
     private abstract static class TTTEvent {} // no members
 
     private static class Move extends TTTEvent
     {
         public Player player;
         public Pos pos;
-        
+
         Move(Player player, Pos pos)
         {
             super();
             this.player = player;
             this.pos = pos;
         }
-                
+
         public String toString()
         {
             return "move by " + player + " at " + pos;
         }
     }
-    
-    
-    
+
+
+
     private static class Pause extends TTTEvent
     {
         public Player player;
-        
+
         Pause(Player p)
         {
             super();
             this.player = p;
         }
-        
+
         public String toString()
         {
             return "pause by " + player;
         }
     }
-    
-    
-    private static final Move move1 = 
+
+
+    private static final Move move1 =
         new Move
         (
             Player.X,
             new Pos(1,1)
         );
-        
+
     public static void main(String[] args)
     {
         System.out.println(board1);
 //         System.out.println(move1);
-        
+
         // make a move:
-        board2.changeCell
-          (move1.pos, 
+        board1.changeCell
+          (move1.pos,
            playerCellVal(move1.player));
-        System.out.println(board2);
-        
+        System.out.println(board1);
+
         // initialise events list
         List<TTTEvent> events = new ArrayList<TTTEvent>();
-        events.add(new Pause(Player.X));
-        events.add(new Move(Player.X, new Pos(1,1)));
-        events.add(new Pause(Player.O));
-        events.add(new Move(Player.O, new Pos(1,2)));
-        events.add(new Move(Player.X, new Pos(2,2)));
-        
-        // print all events
-        for ( TTTEvent event : events)
-        {
-            System.out.println(event);
-        }
-/*
+        events.add(new Move(Player.X, new Pos(0,0)));
+        events.add(new Move(Player.O, new Pos(1,0)));
+        events.add(1, new Pause(Player.X)); // insert as 2nd
+
+        // a simpler way to create a specific ArrayList:
+        events = Arrays.asList(new Move(Player.X, new Pos(0,0)), new Pause(Player.X), new Move(Player.O, new Pos(1,0)));
+
+        // add move to the end of the list of events:
+//         events.add(move1);
+        System.out.println("events = " + events);
+
         // find and print the first pause event:
         for (TTTEvent event : events)
         {
@@ -164,7 +157,13 @@ public class tttColl
                 break;
             }
         }
-*/
+
+        // an equivalent of the above, using Java 8 streams:
+        events.stream()
+          .filter(e -> e instanceof Pause)
+          .findFirst()
+          .map(p -> { System.out.println(p); return null; });
+
         // extract all players from the events list
         List<Player> players = new ArrayList<Player>();
         for (TTTEvent event : events)
@@ -178,7 +177,7 @@ public class tttColl
                 players.add(((Pause)event).player);
             }
         }
-        
+
         // filter out all pause events
         List<TTTEvent> events2 = new ArrayList<TTTEvent>();
         for (TTTEvent event : events)
@@ -189,11 +188,21 @@ public class tttColl
             }
         }
 
-        // extract all players that pause from the events list
-        List<Player> pausingPlayers = new ArrayList<Player>();
-        // TASK 5.2.(b): make sure this variable has the value described in the comment
+        // an equivalent of the above, using Java 8 streams:
+        events2 =
+          events.stream()
+            .filter(e -> ! (e instanceof Pause))
+            .collect(Collectors.toList());
 
-        System.out.print("Pausing players: ");
-        System.out.println(pausingPlayers);
+        System.out.println("events2 = " + events2);
+
+        System.out.println("");
+
+        // board -> score map
+        Map<Board, Float> event2board =
+            new HashMap<Board, Float>(); // empty
+        event2board.put(board1, 2.0F);
+//         System.out.println(event2board.get(board1));
+
     }
 }
