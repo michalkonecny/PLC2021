@@ -1,7 +1,10 @@
 {-
   To execute this program, paste the content of this file
-  to http://elm-lang.org/try and press "compile".
+  to http://elm-lang.org/try or https://ellie-app.com and press "compile".
 -}
+
+module Main exposing (..)
+
 import Browser
 import Html exposing (..)
 import Html.Attributes as A exposing (..)
