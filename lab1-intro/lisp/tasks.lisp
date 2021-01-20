@@ -8,6 +8,6 @@
 (format t "you typed: ~a" input)
 
 ;; code for Task 1.2(c):
-(let ((prg '(+ 1 n))) (print prg)      )
-;; The above Lisp expression first defines a very simple program,
-;; and then prints the program.
+(setf prg '(+ 1 n)) ; define a very simple program
+(print prg) ; print the program
+; TODO: execute the program with n = 1 and print its result
