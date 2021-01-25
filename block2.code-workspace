@@ -1,0 +1,17 @@
+{
+	"folders": [
+    {
+      "path": "block2/lisp"
+    },
+    {
+      "path": "block2/ada"
+    },
+    {
+      "path": "block2/c"
+    },
+    {
+      "path": "block2/haskell"
+    }
+	],
+	"settings": {}
+}
