@@ -4,6 +4,13 @@ evalBitsInt :: [Integer] -> Integer
 evalBitsInt bits = 
     sum (zipWith (*) (reverse bits) (map (2^) [0..]))
 
+intToBits :: Integer -> [Integer]
+intToBits 0 = []
+intToBits n = (intToBits (n `div` 2)) ++  [n `mod` 2]
+
+roundToBits :: Int -> Integer -> Integer
+roundToBits bitsize n = evalBitsInt (reverse (take bitsize (reverse (intToBits n))))
+
 evalBitsFrac :: [Integer] -> Double
 evalBitsFrac bits = 
     sum (zipWith (*) (map fromInteger bits) (map (2^^) [-1,-2..]))
