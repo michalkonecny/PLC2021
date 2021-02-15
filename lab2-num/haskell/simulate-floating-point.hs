@@ -15,8 +15,8 @@ evalBitsFrac :: [Integer] -> Double
 evalBitsFrac bits = 
     sum (zipWith (*) (map fromInteger bits) (map (2^^) [-1,-2..]))
 
-decodeFP_3_3 :: [Integer] -> [Integer] -> Double
-decodeFP_3_3 exponentBits mantissaBits =
+encodeFP_3_3 :: [Integer] -> [Integer] -> Double
+encodeFP_3_3 exponentBits mantissaBits =
     let exponent = evalBitsInt exponentBits - 3 in
     let mantissa = 1 + (evalBitsFrac mantissaBits) in
     let mantissa0 = (evalBitsFrac mantissaBits) in
@@ -31,3 +31,10 @@ decodeFP_3_3 exponentBits mantissaBits =
             else if mantissa0 == 0 
                 then infinity
                 else nan
+
+float_to_rational x =
+    let pair = decodeFloat x in
+    let (n,e) = pair in
+    2^^e * (fromInteger n :: Rational)
+
+encodeFloatPair (n,e) = encodeFloat n e
