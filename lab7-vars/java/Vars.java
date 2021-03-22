@@ -26,5 +26,17 @@ public class Vars
         }
 
         // System.out.println("" + i); // ERROR, scope of i ends on the above }
+
+        for(int i = 0; i < 2; i++){
+            // for(int i = 0; i < 3; i++){ // error: duplicate variable
+            //     System.out.println("hi!");
+            // }
+            for(int j = 0; j < 3; j++){
+                System.out.println("hi!");
+            }
+            for(int j = 0; j < 3; j++){
+                System.out.println("hi!");
+            }
+        }
     }
 }
