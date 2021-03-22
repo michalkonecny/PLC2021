@@ -23,39 +23,17 @@ public abstract class ArithExpTest
         countResultH.value = 0;
         exp1.countNodesInOut(countResultH);
 
+        System.out.println("exp1.countNodesInOut(countResultH) = "+countResultH.value);
+
         countResultH.value = 0;
         exp1.countNodesRef(countResultH);
 
-        ArithExp exp2 =
-            new ArithExpBinary
-                (
-                    ArithExpBinary.BinaryOperator.POWER,
-                    exp1,
-                    exp1
-                );
+        System.out.println("exp1.countNodesRef(countResultH) = "+countResultH.value);
 
-        printExpInfo("exp1", exp1);
 
-        printExpInfo("exp2", exp2);
-
-        exp1.incrementAllNumbers();
-        printExpInfo("exp1 all numbers incremented", exp1);
-
-        printExpInfo("exp2 after exp1 incremented", exp2);
-
-        exp2.incrementAllNumbers();
-        printExpInfo("exp2 all numbers incremented", exp2);
 
     }
 
-    public static void printExpInfo(String exprName, ArithExp expr)
-    {
-        System.out.println("--------");
-        System.out.println(exprName + " = " + expr);
-//         System.out.println("check(" + exprName + ") = " + expr.check());
-        System.out.println("countNodes(" + exprName + ") = " + expr.countNodes());
-        System.out.println("--------");
-    }
 }
 
 
