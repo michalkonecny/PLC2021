@@ -51,14 +51,13 @@ toppingUp logTV accName accTV =
     where
     topUp =
         do
-        waitUntilNearlyEmpty 
         atomically $
             do
+            waitUntilNearlyEmpty 
             credit <- readTVar accTV
             writeTVar accTV (credit + amount)
         log $ "Topped up " ++ show amount
     waitUntilNearlyEmpty =
-        atomically $
             do
             credit <- readTVar accTV
             if credit < 5
