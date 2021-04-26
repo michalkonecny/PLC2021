@@ -67,10 +67,10 @@ public class TopUp
         public synchronized void waitUntilNearlyEmpty()
         {
             // wait until not paused:
-            while( credit > 5 )
+            while( ! (credit <= 5) )
             {
                 try {
-                    Thread.sleep(100);
+                    this.wait();
                 } catch (InterruptedException e) {}
             }
         }
@@ -78,9 +78,8 @@ public class TopUp
         public synchronized void makeCall(int cost)
         {
             if(credit >= cost){
-                synchronized(this){
-                    credit = credit - cost;
-                }
+                credit = credit - cost;
+                this.notifyAll();
                 log("Made call costing " + cost);
             }else{
                 log("Failed to make call costing " + cost);
@@ -92,6 +91,7 @@ public class TopUp
             int newcredit = credit + amount;
             log(String.format("Top-up %d: %d -> %d\n", amount, credit, newcredit));
             credit = newcredit;
+            this.notifyAll();
         }
     }
 
