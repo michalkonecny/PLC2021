@@ -58,11 +58,11 @@ toppingUp logTV accName accTV =
             writeTVar accTV (credit + amount)
         log $ "Topped up " ++ show amount
     waitUntilNearlyEmpty =
-            do
-            credit <- readTVar accTV
-            if credit < 5
-                then pure ()
-                else retry
+        do
+        credit <- readTVar accTV
+        if credit <= 5
+            then pure ()
+            else retry
     amount = 10
     log msg = logWithPrefix logTV (accName ++ ": ") msg
 

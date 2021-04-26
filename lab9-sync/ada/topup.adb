@@ -39,7 +39,7 @@ procedure Topup is
             Credit := New_Credit;
         end Top_Up;
 
-        entry Wait_Until_Nearly_Empty when Credit < 5 is 
+        entry Wait_Until_Nearly_Empty when Credit <= 5 is 
         begin
             Null;
         end Wait_Until_Nearly_Empty;
